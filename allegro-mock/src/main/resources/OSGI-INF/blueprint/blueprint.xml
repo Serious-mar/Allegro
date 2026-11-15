@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <!-- Konfiguracja z ConfigAdmin (etc/pl.isp.allegro.cfg); ponizej wartosci domyslne. -->
+  <cm:property-placeholder persistent-id="pl.isp.allegro" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="mock.port" value="8090"/>
+      <cm:property name="mock.error429Rate" value="0.15"/>
+      <cm:property name="mock.error500Rate" value="0.10"/>
+      <cm:property name="mock.ourSeller" value="nasz-sklep"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="market" class="pl.isp.allegro.mock.MarketSimulator">
+    <argument value="${mock.ourSeller}"/>
+  </bean>
+  <bean id="routes" class="pl.isp.allegro.mock.AllegroMockRoutes">
+    <property name="market" ref="market"/>
+    <property name="error429Rate" value="${mock.error429Rate}"/>
+    <property name="error500Rate" value="${mock.error500Rate}"/>
+  </bean>
+
+  <camelContext id="allegro-mock" xmlns="http://camel.apache.org/schema/blueprint">
+    <routeBuilder ref="routes"/>
+  </camelContext>
+</blueprint>

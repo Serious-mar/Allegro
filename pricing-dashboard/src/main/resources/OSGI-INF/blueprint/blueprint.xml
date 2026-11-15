@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <!-- Konfiguracja z ConfigAdmin (etc/pl.isp.allegro.cfg); ponizej wartosci domyslne. -->
+  <cm:property-placeholder persistent-id="pl.isp.allegro" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="kafka.brokers" value="localhost:9092"/>
+      <cm:property name="mqtt.host" value="localhost"/>
+      <cm:property name="mqtt.port" value="1883"/>
+      <cm:property name="dashboard.port" value="8091"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="state" class="pl.isp.allegro.dashboard.DashboardState"/>
+  <bean id="routes" class="pl.isp.allegro.dashboard.DashboardRoutes">
+    <property name="state" ref="state"/>
+  </bean>
+
+  <camelContext id="pricing-dashboard" xmlns="http://camel.apache.org/schema/blueprint">
+    <routeBuilder ref="routes"/>
+  </camelContext>
+</blueprint>

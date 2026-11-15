@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Repozytorium feature'ow Karafa. Kazdy modul systemu to osobny feature = osobny bundle OSGi,
+  ktory mozna niezaleznie instalowac, zatrzymywac i aktualizowac (feature:install / bundle:stop).
+-->
+<features name="allegro-pricing-${project.version}" xmlns="http://karaf.apache.org/xmlns/features/v1.6.0">
+
+  <repository>mvn:org.apache.camel.karaf/apache-camel/${camel.version}/xml/features</repository>
+
+  <feature name="pricing-common" version="${project.version}" description="Model komunikatow, silnik regul, definicje endpointow">
+    <feature>aries-blueprint</feature>
+    <feature version="${camel.version}">camel-blueprint</feature>
+    <feature version="${camel.version}">camel-jackson</feature>
+    <!-- HttpOperationFailedException dla wspolnej polityki retry (HttpResilience) -->
+    <bundle dependency="true">mvn:org.apache.camel/camel-http-base/${camel.version}</bundle>
+    <bundle>mvn:pl.isp.allegro/pricing-common/${project.version}</bundle>
+  </feature>
+
+  <feature name="allegro-mock" version="${project.version}" description="Mock API Allegro (oferty + losowe bledy 429/500)">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-netty-http</feature>
+    <bundle>mvn:pl.isp.allegro/allegro-mock/${project.version}</bundle>
+  </feature>
+
+  <feature name="pricing-scheduler" version="${project.version}" description="Harmonogram: Quartz -> Splitter -> RabbitMQ">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-quartz</feature>
+    <feature version="${camel.version}">camel-rabbitmq</feature>
+    <bundle>mvn:pl.isp.allegro/pricing-scheduler/${project.version}</bundle>
+  </feature>
+
+  <feature name="pricing-collector" version="${project.version}" description="Kolektor: RabbitMQ -> API Allegro -> Kafka">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-rabbitmq</feature>
+    <feature version="${camel.version}">camel-http</feature>
+    <feature version="${camel.version}">camel-kafka</feature>
+    <bundle>mvn:pl.isp.allegro/pricing-collector/${project.version}</bundle>
+  </feature>
+
+  <feature name="pricing-analyzer" version="${project.version}" description="Analizator: Kafka -> reguly -> RabbitMQ / MQTT">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-kafka</feature>
+    <feature version="${camel.version}">camel-rabbitmq</feature>
+    <feature version="${camel.version}">camel-paho</feature>
+    <bundle>mvn:pl.isp.allegro/pricing-analyzer/${project.version}</bundle>
+  </feature>
+
+  <feature name="pricing-updater" version="${project.version}" description="Aktualizator: RabbitMQ -> API Allegro -> Kafka">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-rabbitmq</feature>
+    <feature version="${camel.version}">camel-http</feature>
+    <feature version="${camel.version}">camel-kafka</feature>
+    <bundle>mvn:pl.isp.allegro/pricing-updater/${project.version}</bundle>
+  </feature>
+
+  <feature name="pricing-dashboard" version="${project.version}" description="Dashboard WWW: Kafka + MQTT -> HTTP">
+    <feature version="${project.version}">pricing-common</feature>
+    <feature version="${camel.version}">camel-kafka</feature>
+    <feature version="${camel.version}">camel-paho</feature>
+    <feature version="${camel.version}">camel-netty-http</feature>
+    <bundle>mvn:pl.isp.allegro/pricing-dashboard/${project.version}</bundle>
+  </feature>
+
+  <feature name="allegro-pricing" version="${project.version}" description="Caly system">
+    <feature version="${project.version}">allegro-mock</feature>
+    <feature version="${project.version}">pricing-scheduler</feature>
+    <feature version="${project.version}">pricing-collector</feature>
+    <feature version="${project.version}">pricing-analyzer</feature>
+    <feature version="${project.version}">pricing-updater</feature>
+    <feature version="${project.version}">pricing-dashboard</feature>
+  </feature>
+</features>

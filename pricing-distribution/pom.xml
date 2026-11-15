@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pl.isp.allegro</groupId>
+    <artifactId>allegro-pricing</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pricing-distribution</artifactId>
+  <packaging>karaf-assembly</packaging>
+  <name>Allegro Pricing :: Dystrybucja Karaf</name>
+  <description>Samowystarczalna dystrybucja Apache Karaf z zainstalowanymi bundlami systemu (target/assembly)</description>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>framework</artifactId>
+      <version>${karaf.version}</version>
+      <type>kar</type>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.karaf.features</groupId>
+      <artifactId>standard</artifactId>
+      <version>${karaf.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel.karaf</groupId>
+      <artifactId>apache-camel</artifactId>
+      <version>${camel.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>pl.isp.allegro</groupId>
+      <artifactId>pricing-features</artifactId>
+      <version>${project.version}</version>
+      <classifier>features</classifier>
+      <type>xml</type>
+      <scope>runtime</scope>
+    </dependency>
+    <!-- Dependencje ponizej wymuszaja kolejnosc budowania w reaktorze (bundle przed dystrybucja). -->
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-common</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>allegro-mock</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-scheduler</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-collector</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-analyzer</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-updater</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+    <dependency><groupId>pl.isp.allegro</groupId><artifactId>pricing-dashboard</artifactId><version>${project.version}</version><scope>provided</scope></dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-resources-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>process-resources</id>
+            <goals>
+              <goal>resources</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.karaf.tooling</groupId>
+        <artifactId>karaf-maven-plugin</artifactId>
+        <configuration>
+          <javase>11</javase>
+          <archiveZip>false</archiveZip>
+          <archiveTarGz>true</archiveTarGz>
+          <bootFeatures>
+            <feature>standard</feature>
+            <feature>allegro-pricing</feature>
+          </bootFeatures>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

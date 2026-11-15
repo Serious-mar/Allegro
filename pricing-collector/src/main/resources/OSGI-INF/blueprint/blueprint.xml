@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <!-- Konfiguracja z ConfigAdmin (etc/pl.isp.allegro.cfg); ponizej wartosci domyslne. -->
+  <cm:property-placeholder persistent-id="pl.isp.allegro" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="rabbitmq.host" value="localhost"/>
+      <cm:property name="rabbitmq.port" value="5672"/>
+      <cm:property name="rabbitmq.username" value="guest"/>
+      <cm:property name="rabbitmq.password" value="guest"/>
+      <cm:property name="kafka.brokers" value="localhost:9092"/>
+      <cm:property name="allegro.api.url" value="http://localhost:8090"/>
+      <cm:property name="allegro.api.token" value="mock-token"/>
+      <cm:property name="http.retry.max" value="4"/>
+      <cm:property name="http.retry.delayMs" value="500"/>
+      <cm:property name="http.retry.delay429Ms" value="2000"/>
+      <cm:property name="breaker.failureThreshold" value="5"/>
+      <cm:property name="breaker.failureWindowMs" value="30000"/>
+      <cm:property name="breaker.halfOpenAfterMs" value="15000"/>
+      <cm:property name="collector.throttle.perSecond" value="5"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="routes" class="pl.isp.allegro.collector.CollectorRoutes">
+    <property name="throttlePerSecond" value="${collector.throttle.perSecond}"/>
+    <property name="failureThreshold" value="${breaker.failureThreshold}"/>
+    <property name="failureWindowMs" value="${breaker.failureWindowMs}"/>
+    <property name="halfOpenAfterMs" value="${breaker.halfOpenAfterMs}"/>
+  </bean>
+
+  <camelContext id="pricing-collector" xmlns="http://camel.apache.org/schema/blueprint">
+    <routeBuilder ref="routes"/>
+  </camelContext>
+</blueprint>

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<blueprint xmlns="http://www.osgi.org/xmlns/blueprint/v1.0.0"
+           xmlns:cm="http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0">
+
+  <!-- Konfiguracja z ConfigAdmin (etc/pl.isp.allegro.cfg); ponizej wartosci domyslne. -->
+  <cm:property-placeholder persistent-id="pl.isp.allegro" update-strategy="reload">
+    <cm:default-properties>
+      <cm:property name="rabbitmq.host" value="localhost"/>
+      <cm:property name="rabbitmq.port" value="5672"/>
+      <cm:property name="rabbitmq.username" value="guest"/>
+      <cm:property name="rabbitmq.password" value="guest"/>
+      <cm:property name="kafka.brokers" value="localhost:9092"/>
+      <cm:property name="mqtt.host" value="localhost"/>
+      <cm:property name="mqtt.port" value="1883"/>
+      <cm:property name="pricing.undercutStep" value="0.01"/>
+      <cm:property name="pricing.raiseEnabled" value="true"/>
+      <cm:property name="pricing.minChangePct" value="0.5"/>
+      <cm:property name="alerts.digestIntervalMs" value="30000"/>
+      <cm:property name="pricing.maxEventAgeMs" value="60000"/>
+    </cm:default-properties>
+  </cm:property-placeholder>
+
+  <bean id="rules" class="pl.isp.allegro.common.pricing.PricingRules">
+    <argument value="${pricing.undercutStep}"/>
+    <argument value="${pricing.raiseEnabled}"/>
+    <argument value="${pricing.minChangePct}"/>
+  </bean>
+  <bean id="routes" class="pl.isp.allegro.analyzer.AnalyzerRoutes">
+    <property name="rules" ref="rules"/>
+    <property name="digestIntervalMs" value="${alerts.digestIntervalMs}"/>
+    <property name="maxEventAgeMs" value="${pricing.maxEventAgeMs}"/>
+  </bean>
+
+  <camelContext id="pricing-analyzer" xmlns="http://camel.apache.org/schema/blueprint">
+    <routeBuilder ref="routes"/>
+  </camelContext>
+</blueprint>

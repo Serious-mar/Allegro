@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>pl.isp.allegro</groupId>
+    <artifactId>allegro-pricing</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+  </parent>
+  <artifactId>pricing-collector</artifactId>
+  <packaging>bundle</packaging>
+  <name>Allegro Pricing :: Kolektor ofert</name>
+
+  <dependencies>
+    <dependency>
+      <groupId>pl.isp.allegro</groupId>
+      <artifactId>pricing-common</artifactId>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.camel</groupId>
+      <artifactId>camel-http-base</artifactId>
+      <scope>provided</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.felix</groupId>
+        <artifactId>maven-bundle-plugin</artifactId>
+        <configuration>
+          <instructions>
+            <Private-Package>pl.isp.allegro.collector.*</Private-Package>
+            <!-- Camel rozwiazuje klasy wyjatkow z onException classloaderem TEGO bundla -->
+            <Import-Package>org.apache.camel.http.base,*</Import-Package>
+          </instructions>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>

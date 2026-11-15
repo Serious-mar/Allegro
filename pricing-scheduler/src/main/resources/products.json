@@ -1,0 +1,8 @@
+[
+  {"productId": "P-1001", "name": "Sluchawki bezprzewodowe X200", "ourOfferId": "OUR-P-1001", "purchaseCost": 180.00, "minMarginPct": 12},
+  {"productId": "P-1002", "name": "Klawiatura mechaniczna K7",    "ourOfferId": "OUR-P-1002", "purchaseCost": 240.00, "minMarginPct": 10},
+  {"productId": "P-1003", "name": "Mysz gamingowa M5",            "ourOfferId": "OUR-P-1003", "purchaseCost": 95.00,  "minMarginPct": 15},
+  {"productId": "P-1004", "name": "Powerbank 20000 mAh",          "ourOfferId": "OUR-P-1004", "purchaseCost": 70.00,  "minMarginPct": 18},
+  {"productId": "P-1005", "name": "Kamera internetowa FullHD",    "ourOfferId": "OUR-P-1005", "purchaseCost": 130.00, "minMarginPct": 12},
+  {"productId": "P-1006", "name": "Glosnik Bluetooth Mini",       "ourOfferId": "OUR-P-1006", "purchaseCost": 110.00, "minMarginPct": 14}
+]
